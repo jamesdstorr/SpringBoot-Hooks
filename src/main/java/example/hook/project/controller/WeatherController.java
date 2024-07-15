@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
-import example.hook.project.model.SixteenDayForecaset;
+import example.hook.project.model.weatherAPI.dto.Forecast;
 import example.hook.project.service.WeatherDataServiceImpl;
 
 @RestController
@@ -23,7 +23,7 @@ public class WeatherController {
 
     @Operation(summary = "Retrieve 16 Day Forecast for given location")
     @RequestMapping("/forecast")
-    public CompletableFuture<ResponseEntity<SixteenDayForecaset>> getForecast(@RequestParam("location") String location) {
+    public CompletableFuture<ResponseEntity<Forecast>> getForecast(@RequestParam("location") String location) {
         return weatherDataService.fetchWeatherForecast(location).thenApply(ResponseEntity::ok);
                 
     }

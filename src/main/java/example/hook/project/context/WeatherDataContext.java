@@ -1,6 +1,6 @@
 package example.hook.project.context;
 
-import example.hook.project.model.SixteenDayForecaset;
+import example.hook.project.model.weatherAPI.dto.Forecast;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,10 +9,8 @@ import lombok.Data;
 public class WeatherDataContext {
 
     private String location;
-    private String lon;
-    private String lat;
+    private String lonLat;
     private String rawData;
-    private SixteenDayForecaset processedData;
+    private Forecast processedData;
     private Throwable error;
-    
 }

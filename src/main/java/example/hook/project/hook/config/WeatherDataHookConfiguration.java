@@ -6,30 +6,40 @@ import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import example.hook.project.context.WeatherDataContext;
+import example.hook.project.hook.CompositeWeatherDataHook;
 import example.hook.project.hook.WeatherDataHook;
 import example.hook.project.hook.WeatherDataHookEnum;
 import example.hook.project.hook.annotations.EnhanceWeatherDataHooks;
 import example.hook.project.hook.annotations.FetchWeatherDataHooks;
 import example.hook.project.hook.annotations.ReturnWeatherDataHooks;
-import example.hook.project.context.WeatherDataContext;
-import example.hook.project.hook.CompositeWeatherDataHook;
-
-/**
- * Configuration class that sets up the hooks for different stages of weather data processing.
- */
 
 @Configuration
 public class WeatherDataHookConfiguration {
 
     @Bean
     public Map<WeatherDataHookEnum, WeatherDataHook<WeatherDataContext>> weatherDataHooks(
-        @FetchWeatherDataHooks WeatherDataHook<WeatherDataContext> fetchWeatherDataHook,
-        @EnhanceWeatherDataHooks WeatherDataHook<WeatherDataContext>  enhancWeatherDataHook,
-        @ReturnWeatherDataHooks   WeatherDataHook<WeatherDataContext>  returnWeatherDataHook) {
+        WeatherDataHook<WeatherDataContext> compositeFetchWeatherDataHook,
+        WeatherDataHook<WeatherDataContext> compositeEnhanceWeatherDataHook,
+        WeatherDataHook<WeatherDataContext> compositeReturnWeatherDataHook) {
         return Map.of(
-                WeatherDataHookEnum.FETCH_WEATHER_DATA, fetchWeatherDataHook,
-                WeatherDataHookEnum.ENHANCE_WEATHER_DATA, enhancWeatherDataHook,
-                WeatherDataHookEnum.RETURN_WEATHER_DATA, returnWeatherDataHook);
+            WeatherDataHookEnum.FETCH_WEATHER_DATA, compositeFetchWeatherDataHook,
+            WeatherDataHookEnum.ENHANCE_WEATHER_DATA, compositeEnhanceWeatherDataHook,
+            WeatherDataHookEnum.RETURN_WEATHER_DATA, compositeReturnWeatherDataHook);
     }
-   
+
+    @Bean
+    public WeatherDataHook<WeatherDataContext> compositeFetchWeatherDataHook(@FetchWeatherDataHooks List<WeatherDataHook<WeatherDataContext>> hooks) {
+        return new CompositeWeatherDataHook<>(hooks);
+    }
+
+    @Bean
+    public WeatherDataHook<WeatherDataContext> compositeEnhanceWeatherDataHook(@EnhanceWeatherDataHooks List<WeatherDataHook<WeatherDataContext>> hooks) {
+        return new CompositeWeatherDataHook<>(hooks);
+    }
+
+    @Bean
+    public WeatherDataHook<WeatherDataContext> compositeReturnWeatherDataHook(@ReturnWeatherDataHooks List<WeatherDataHook<WeatherDataContext>> hooks) {
+        return new CompositeWeatherDataHook<>(hooks);
+    }
 }
